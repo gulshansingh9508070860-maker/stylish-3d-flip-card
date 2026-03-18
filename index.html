@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flip Card</title>
+  <style>
+    :root { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      overflow: hidden;
+      place-items: center;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(56, 189, 248, 0.18), transparent 35%),
+        radial-gradient(circle at 85% 75%, rgba(236, 72, 153, 0.14), transparent 35%),
+        #0b1121;
+    }
+    .stage {
+      width: 280px;
+      height: 360px;
+      perspective: 1200px;
+      border-radius: 24px;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      animation: roam 12s ease-in-out infinite alternate;
+    }
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15), 0 18px 45px rgba(0,0,0,0.25), 0 0 20px rgba(59,130,246,0.35);
+      backdrop-filter: blur(5px);
+      animation: float 4.5s ease-in-out infinite, glow 3.5s linear infinite;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+    .stage:hover .card {
+      transform: rotateY(180deg) scale(1.03) translateY(-4px);
+      animation-play-state: paused;
+    }
+    .face {
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      backface-visibility: hidden;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      text-align: center;
+      padding: 1rem;
+      color: #f8fafc;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(4px);
+    }
+    .front {
+      background: linear-gradient(135deg, rgba(29, 78, 216, 0.5) 0%, rgba(139, 92, 246, 0.45) 100%);
+      border: 1px solid rgba(255,255,255,0.22);
+      gap: 0.4rem;
+    }
+    .front h1 { margin: 0; font-size: 1.42rem; letter-spacing: 0.2px; }
+    .front p { margin: 0; font-size: 0.85rem; color: #dbeafe; opacity: 0.95; }
+    .tag { margin-top: 0.55rem; padding: 0.22rem 0.75rem; border-radius: 999px; background: rgba(255,255,255,0.22); font-size: 0.72rem; letter-spacing: 0.2px; backdrop-filter: blur(4px); }
+    .back {
+      transform: rotateY(180deg);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: linear-gradient(145deg, rgba(17, 24, 39, 0.8) 0%, rgba(31, 41, 55, 0.85) 100%);
+      gap: 0.35rem;
+    }
+    .chip { width: 42px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #fbbf24, #f97316); box-shadow: 0 10px 20px rgba(0,0,0,0.25); margin-bottom: 0.2rem; }
+    .name { margin: 0; font-weight: 700; letter-spacing: 0.2px; }
+    .info { margin: 0; font-size: 0.84rem; line-height: 1.25; color: #d1d5db; }
+    .small { margin-top: 0.2rem; font-size: 0.72rem; color: #cbd5e1; opacity: 0.9; }
+    @keyframes float { 0% { transform: translateY(0) rotateZ(0deg); } 25% { transform: translateY(-6px) rotateZ(0.3deg); } 50% { transform: translateY(-10px) rotateZ(-0.2deg); } 75% { transform: translateY(-6px) rotateZ(0.25deg); } 100% { transform: translateY(0) rotateZ(0deg); } }
+    @keyframes glow { 0% { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15), 0 18px 45px rgba(0,0,0,0.25), 0 0 18px rgba(59,130,246,0.35); border-color: rgba(59,130,246,0.55); }
+      25% { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15), 0 18px 45px rgba(0,0,0,0.25), 0 0 22px rgba(236,72,153,0.45); border-color: rgba(236,72,153,0.55); }
+      50% { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15), 0 18px 45px rgba(0,0,0,0.25), 0 0 20px rgba(59,130,246,0.45); border-color: rgba(56,189,248,0.65); }
+      75% { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15), 0 18px 45px rgba(0,0,0,0.25), 0 0 22px rgba(251,191,36,0.45); border-color: rgba(251,191,36,0.75); }
+      100% { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.15), 0 18px 45px rgba(0,0,0,0.25), 0 0 18px rgba(59,130,246,0.35); border-color: rgba(59,130,246,0.55); } }
+    @keyframes roam { 0% { transform: translate(0, 0); }
+      25% { transform: translate(calc(-50vw + 200px), calc(-10vh + 20px)); }
+      50% { transform: translate(calc(40vw - 200px), calc(22vh - 20px)); }
+      75% { transform: translate(calc(-30vw + 100px), calc(-12vh + 15px)); }
+      100% { transform: translate(calc(20vw - 150px), calc(16vh - 25px)); } }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="card">
+      <div class="face front">
+        <div class="chip"></div>
+        <h1>Stylish Card</h1>
+        <p>Screen ke beech me, hover par flip</p>
+        <div class="tag">CSS animation</div>
+      </div>
+      <div class="face back">
+        <div class="name">Gulshan Kumar Singh</div>
+        <p class="info">Web Developer · UI/UX · CSS</p>
+        <div class="small">Email: hello@example.com</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const stage = document.querySelector('.stage');
+    const card = document.querySelector('.card');
+
+    stage.addEventListener('mousemove', (e) => {
+      const rect = stage.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const dx = (x - cx) / cx;
+      const dy = (y - cy) / cy;
+      const rotateY = dx * 10;
+      const rotateX = -dy * 10;
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+    });
+
+    stage.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+    });
+  </script>
+</body>
+</html>
